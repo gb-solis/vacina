@@ -74,5 +74,5 @@ def plota(pessoa=None):
         
 
 if __name__=='__main__':
-    vacinação(path, robô=False)
+    vacinação(path, robô=True)
     # plota()
