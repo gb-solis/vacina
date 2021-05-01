@@ -64,6 +64,7 @@ def plota(pessoa=None):
         with open(arquivo, 'r') as file:
             linhas = file.readlines()
             y, x = zip(*[i.split() for i in linhas])
+            y = [int(i) for i in y]
             plt.plot_date(x, y, xdate=True)
             plt.title(f'Tempo estimado para a vacinação de {pf["name"]}')
             plt.xlabel('data de acesso')
