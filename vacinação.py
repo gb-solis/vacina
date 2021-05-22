@@ -20,7 +20,7 @@ def pessoa(nome, idade, estado, prioritario=False):
     return dict(zip(chaves, valores))
 
 # pessoas que quero acompanhar
-with open(os.path.join(local_folder, 'perfis.json', encoding='utf-8'),'r') as perfis_json:
+with open(os.path.join(local_folder, 'perfis.json'),'r', encoding='utf-8') as perfis_json:
     perfis = [pessoa(**dados) for dados in json.loads(perfis_json.read())]
 
 #%%
