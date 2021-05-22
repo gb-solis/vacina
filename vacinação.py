@@ -6,6 +6,8 @@ import re
 import datetime
 from dateutil.relativedelta import relativedelta
 from matplotlib import pyplot as plt
+from matplotlib import dates as mdates
+import matplotlib.units as munits
 
 url = 'https://quandovouservacinado.com/'
 local_folder = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +28,7 @@ with open(os.path.join(local_folder, 'perfis.json'),'r', encoding='utf-8') as pe
 #%%
 
 comparação = ['Gabriel', 'Thomas']
+
 
 # obtém os dados e os processa
 def vacinação(path=path, robô=False):
@@ -61,6 +64,10 @@ def vacinação(path=path, robô=False):
             file.write(f'{dias_totais} {hoje}\n')
 
 
+# converte datas no matplotlib para formato mais legível
+converter = mdates.ConciseDateConverter(show_offset=False)
+munits.registry[datetime.date] = converter
+
 def plota(pessoa=None):
     for pf in (pessoa,) if pessoa else perfis:
         arquivo = path + pf['name'] + '.txt'
@@ -68,11 +75,13 @@ def plota(pessoa=None):
             linhas = file.readlines()
         y, x = zip(*[i.split() for i in linhas])
         y = [int(i) for i in y]
+        x = [datetime.date.fromisoformat(i) for i in x]
+        
         plt.plot_date(x, y, 'o:', xdate=True)
         plt.title(f'Tempo estimado para a vacinação de {pf["name"]}')
         plt.xlabel('data de acesso')
-        plt.xticks(rotation=40)
         plt.ylabel('dias estimados até a vacinação')
+        
         plt.show()
         
     for nome in comparação:
@@ -81,11 +90,11 @@ def plota(pessoa=None):
             linhas = file.readlines()
         y, x = zip(*[i.split() for i in linhas])
         y = [int(i) for i in y]
+        x = [datetime.date.fromisoformat(i) for i in x]
         plt.plot_date(x, y, 'o:', xdate=True)
         
     plt.title('Tempo estimado para a vacinação')
     plt.xlabel('data de acesso')
-    plt.xticks(rotation=40)
     plt.ylabel('dias estimados até a vacinação')
     plt.legend(('Gabriel', 'Thomas'))
     plt.show()
