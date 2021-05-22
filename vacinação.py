@@ -5,9 +5,6 @@ from bs4 import BeautifulSoup
 import re
 import datetime
 from dateutil.relativedelta import relativedelta
-from matplotlib import pyplot as plt
-from matplotlib import dates as mdates
-import matplotlib.units as munits
 
 url = 'https://quandovouservacinado.com/'
 local_folder = os.path.dirname(os.path.abspath(__file__))
@@ -25,11 +22,6 @@ def pessoa(nome, idade, estado, prioritario=False):
 with open(os.path.join(local_folder, 'perfis.json'),'r', encoding='utf-8') as perfis_json:
     perfis = [pessoa(**dados) for dados in json.loads(perfis_json.read())]
 
-#%%
-
-comparação = ['Gabriel', 'Thomas']
-
-
 # obtém os dados e os processa
 def vacinação(path=path, robô=False):
     for pf in perfis:
@@ -42,7 +34,6 @@ def vacinação(path=path, robô=False):
         dias = extrai(re.search(r'([0-9]+) dia(?:s)?', raw_data.text))
         meses = extrai(re.search(r'([0-9]{1,2}) (?:meses|mês)', raw_data.text))
         anos = extrai(re.search(r'([0-9]) ano', raw_data.text))
-        mais_de_ano = False
         
         hoje = datetime.date.today()
         vacina = hoje + relativedelta(days=dias, months=meses, years=anos)
@@ -62,46 +53,3 @@ def vacinação(path=path, robô=False):
         arquivo = os.path.join(local_folder, path, pf['name'] + '.txt')
         with open(arquivo, 'a') as file:
             file.write(f'{dias_totais} {hoje}\n')
-
-
-# converte datas no matplotlib para formato mais legível
-converter = mdates.ConciseDateConverter(show_offset=False)
-munits.registry[datetime.date] = converter
-
-def plota(pessoa=None):
-    for pf in (pessoa,) if pessoa else perfis:
-        arquivo = path + pf['name'] + '.txt'
-        with open(arquivo, 'r') as file:
-            linhas = file.readlines()
-        y, x = zip(*[i.split() for i in linhas])
-        y = [int(i) for i in y]
-        x = [datetime.date.fromisoformat(i) for i in x]
-        
-        plt.plot_date(x, y, 'o:', xdate=True)
-        plt.title(f'Tempo estimado para a vacinação de {pf["name"]}')
-        plt.xlabel('data de acesso')
-        plt.ylabel('dias estimados até a vacinação')
-        
-        plt.show()
-        
-    for nome in comparação:
-        arquivo = path + nome + '.txt'
-        with open(arquivo, 'r') as file:
-            linhas = file.readlines()
-        y, x = zip(*[i.split() for i in linhas])
-        y = [int(i) for i in y]
-        x = [datetime.date.fromisoformat(i) for i in x]
-        plt.plot_date(x, y, 'o:', xdate=True)
-        
-    plt.title('Tempo estimado para a vacinação')
-    plt.xlabel('data de acesso')
-    plt.ylabel('dias estimados até a vacinação')
-    plt.legend(('Gabriel', 'Thomas'))
-    plt.show()
-        
-    
-        
-
-if __name__=='__main__':
-    vacinação(path, robô=True)
-    # plota()

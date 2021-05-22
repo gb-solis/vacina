@@ -1,3 +1,4 @@
 perfis.json
 *.txt
 *.bat
+__pycache__
