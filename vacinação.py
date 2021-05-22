@@ -1,4 +1,6 @@
 import requests
+import json
+import os
 from bs4 import BeautifulSoup
 import re
 import datetime
@@ -8,24 +10,22 @@ from matplotlib import dates as mdates
 import matplotlib.units as munits
 
 url = 'https://quandovouservacinado.com/'
+local_folder = os.path.dirname(os.path.abspath(__file__))
 path = '' # path onde salvar o arquivo de dados
 
 # cria o dicionário que representa uma pessoa
-def pessoa(nome, idade, estado, prioritário=False):
+def pessoa(nome, idade, estado, prioritario=False):
     assert len(estado)==2, 'por favor insira apenas a sigla do estado'
     
     chaves = ('name', 'age', 'state', 'pni')
-    valores = (nome, idade, estado.lower(), 'on' if prioritário else None)
+    valores = (nome, idade, estado.lower(), 'on' if prioritario else None)
     return dict(zip(chaves, valores))
 
-
 # pessoas que quero acompanhar
-perfis = [
-    pessoa(nome='Gabriel', idade=23, estado='MG', prioritário=False),
-    pessoa('Meus pais', 55, 'MG'),
-    pessoa('Henrique', 50, 'MG', prioritário=True),
-    pessoa('Thomas', 22, 'SP')
-    ]
+with open(os.path.join(local_folder, 'perfis.json'),'r', encoding='utf-8') as perfis_json:
+    perfis = [pessoa(**dados) for dados in json.loads(perfis_json.read())]
+
+#%%
 
 comparação = ['Gabriel', 'Thomas']
 
@@ -59,7 +59,7 @@ def vacinação(path=path, robô=False):
             print(f'{pf["name"]} vai ser vacinado em '
                   f'{mostra_data(dias,meses,anos)}. ({dias_totais} dias)')
         
-        arquivo = path + pf['name'] + '.txt'
+        arquivo = os.path.join(local_folder, path, pf['name'] + '.txt')
         with open(arquivo, 'a') as file:
             file.write(f'{dias_totais} {hoje}\n')
 
