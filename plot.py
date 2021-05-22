@@ -1,9 +1,8 @@
-from vacinação import perfis, path
+from vacinação import perfis, load_dados
 from matplotlib import pyplot as plt
 from matplotlib import dates as mdates
 import matplotlib.units as munits
 import sys
-import os
 import datetime
 
 # converte datas no matplotlib para formato mais legível
@@ -12,12 +11,7 @@ munits.registry[datetime.date] = converter
 
 def plota(pessoas):
     for nome in pessoas:
-        arquivo = os.path.join(path, nome + '.txt')
-        with open(arquivo, 'r') as file:
-            linhas = file.readlines()
-        y, x = zip(*[i.split() for i in linhas])
-        y = [int(i) for i in y]
-        x = [datetime.date.fromisoformat(i) for i in x]
+        x, y = load_dados(nome)
         plt.plot_date(x, y, 'o:', xdate=True)
         
     plt.title('Tempo estimado para a vacinação')

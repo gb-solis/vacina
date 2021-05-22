@@ -53,3 +53,12 @@ def vacinação(path=path, robô=False):
         arquivo = os.path.join(local_folder, path, pf['name'] + '.txt')
         with open(arquivo, 'a') as file:
             file.write(f'{dias_totais} {hoje}\n')
+            
+def load_dados(nome):
+    arquivo = os.path.join(path, nome + '.txt')
+    with open(arquivo, 'r') as file:
+        linhas = file.readlines()
+    y, x = zip(*[i.split() for i in linhas])
+    y = [int(i) for i in y]
+    x = [datetime.date.fromisoformat(i) for i in x]
+    return x, y
