@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 
 url = 'https://quandovouservacinado.com/'
 local_folder = os.path.dirname(os.path.abspath(__file__))
-path = '' # path onde salvar o arquivo de dados
+path = 'perfis' # path onde salvar o arquivo de dados
 
 # cria o dicionário que representa uma pessoa
 def pessoa(nome, idade, estado, prioritario=False):

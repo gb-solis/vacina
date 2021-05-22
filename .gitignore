@@ -2,3 +2,6 @@ perfis.json
 *.txt
 *.bat
 __pycache__
+
+perfis/*
+!perfis/.gitkeep

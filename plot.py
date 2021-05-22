@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from matplotlib import dates as mdates
 import matplotlib.units as munits
 import sys
+import os
 import datetime
 
 # converte datas no matplotlib para formato mais legível
@@ -11,7 +12,7 @@ munits.registry[datetime.date] = converter
 
 def plota(pessoas):
     for nome in pessoas:
-        arquivo = path + nome + '.txt'
+        arquivo = os.path.join(path, nome + '.txt')
         with open(arquivo, 'r') as file:
             linhas = file.readlines()
         y, x = zip(*[i.split() for i in linhas])
