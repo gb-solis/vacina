@@ -22,7 +22,10 @@ perfis = [
     pessoa(nome='Gabriel', idade=23, estado='MG', prioritário=False),
     pessoa('Meus pais', 55, 'MG'),
     pessoa('Henrique', 50, 'MG', prioritário=True),
+    pessoa('Thomas', 22, 'SP')
     ]
+
+comparação = ['Gabriel', 'Thomas']
 
 # obtém os dados e os processa
 def vacinação(path=path, robô=False):
@@ -59,19 +62,35 @@ def vacinação(path=path, robô=False):
 
 
 def plota(pessoa=None):
-    for pf in perfis:
+    for pf in (pessoa,) if pessoa else perfis:
         arquivo = path + pf['name'] + '.txt'
         with open(arquivo, 'r') as file:
             linhas = file.readlines()
-            y, x = zip(*[i.split() for i in linhas])
-            y = [int(i) for i in y]
-            plt.plot_date(x, y, xdate=True)
-            plt.title(f'Tempo estimado para a vacinação de {pf["name"]}')
-            plt.xlabel('data de acesso')
-            plt.xticks(rotation=40)
-            plt.ylabel('dias estimados até a vacinação')
-            plt.show()
+        y, x = zip(*[i.split() for i in linhas])
+        y = [int(i) for i in y]
+        plt.plot_date(x, y, 'o:', xdate=True)
+        plt.title(f'Tempo estimado para a vacinação de {pf["name"]}')
+        plt.xlabel('data de acesso')
+        plt.xticks(rotation=40)
+        plt.ylabel('dias estimados até a vacinação')
+        plt.show()
         
+    for nome in comparação:
+        arquivo = path + nome + '.txt'
+        with open(arquivo, 'r') as file:
+            linhas = file.readlines()
+        y, x = zip(*[i.split() for i in linhas])
+        y = [int(i) for i in y]
+        plt.plot_date(x, y, 'o:', xdate=True)
+        
+    plt.title('Tempo estimado para a vacinação')
+    plt.xlabel('data de acesso')
+    plt.xticks(rotation=40)
+    plt.ylabel('dias estimados até a vacinação')
+    plt.legend(('Gabriel', 'Thomas'))
+    plt.show()
+        
+    
         
 
 if __name__=='__main__':
