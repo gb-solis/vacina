@@ -66,7 +66,7 @@ def load_dados(nome):
 # Média dos dias estimados de vacinação
 def melhor_estimativa(nome):
     datas, dias_duracao = load_dados(nome)
-    datas_vac = [data + datetime.timedelta(days = dias) for (data, dias) in zip(datas, dias_duracao)]
+    datas_vac = [data + datetime.timedelta(days=dias) for (data, dias) in zip(datas, dias_duracao)]
     rel_datas_vac = [(data - datas_vac[0]).days for data in datas_vac]
     media_datas_vac = sum(rel_datas_vac) / len(rel_datas_vac)
-    return datas_vac[0] + datetime.timedelta(days = int(media_datas_vac))
+    return datas_vac[0] + datetime.timedelta(days=int(media_datas_vac))

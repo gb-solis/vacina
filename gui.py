@@ -2,13 +2,19 @@ from plot import plot_aux
 from vacinação import perfis
 from functools import partial
 import tkinter as tk
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
+import ctypes
 
 # Create window and frames
 window = tk.Tk()
 window.title('vacina')
+
+# set the taskbar and window icons
+window.tk.call('wm', 'iconphoto', window._w, tk.PhotoImage(file='ícone_vacina.png'))
+myappid = 'vacina.v0' # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 buttonFrame = tk.Frame(window)
 buttonFrame.pack()
@@ -31,7 +37,7 @@ canvas.mpl_connect("key_press_event", key_press_handler)
 toolbar.pack(side=tk.BOTTOM, fill=tk.X)
 canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
-def add_pessoa(pessoa):
+def toggle_pessoa(pessoa):                                 
     if pessoa in pessoas:
         pessoas.remove(pessoa)
     else:
@@ -42,15 +48,21 @@ var_linhas = tk.BooleanVar(window)
 
 def update_plot():
     fig.clear()
-    plot_aux(fig.add_subplot(), pessoas, linhas = var_linhas.get())
+    plot_aux(fig.add_subplot(), pessoas, linhas=var_linhas.get())
     canvas.draw()
 
-check = tk.Checkbutton(buttonFrame, text='Linhas',variable=var_linhas, command=update_plot)
+check = tk.Checkbutton(buttonFrame, text='Linhas', variable=var_linhas, command=update_plot)
 check.pack(side=tk.LEFT)
 
 for perfil in perfis:
     nome = perfil['name']
-    btn = tk.Button(buttonFrame, text = nome, command = partial(add_pessoa, nome))
+    btn = tk.Button(buttonFrame, text=nome, command=partial(toggle_pessoa, nome))
     btn.pack(side=tk.LEFT)
+
+# inicializa a primeira pessoa da lista no plot
+try:
+    toggle_pessoa(perfis[0]['name'])
+except:
+    pass
 
 window.mainloop()
