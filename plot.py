@@ -9,13 +9,13 @@ import datetime
 converter = mdates.ConciseDateConverter(show_offset=False)
 munits.registry[datetime.date] = converter
 
-def plot_aux(ax, pessoas, linhas = False):
+def plot_aux(ax, pessoas, linhas=False):
     for nome in pessoas:
         x, y = load_dados(nome)
-        p = ax.plot_date(x, y, 'o:', xdate=True, label = str(nome))
+        p = ax.plot_date(x, y, 'o:', xdate=True, label=str(nome))
         estim = melhor_estimativa(nome)
         if linhas:
-            ax.axline((mdates.date2num(x[0]), (estim - x[0]).days), slope=-1, color = p[0].get_color(), linestyle = '--', label = estim)
+            ax.axline((mdates.date2num(x[0]), (estim - x[0]).days), slope=-1, color = p[0].get_color(), linestyle = '--', label = estim, alpha=0.5)
         
     ax.set_title('Tempo estimado para a vacinação')
     ax.set_xlabel('Data de acesso')
@@ -23,7 +23,7 @@ def plot_aux(ax, pessoas, linhas = False):
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles, labels)
 
-def plota(pessoas, linhas = False):
+def plota(pessoas, linhas=False):
     fig, ax = plt.subplots()
     plot_aux(ax, pessoas, linhas)
     plt.show()
