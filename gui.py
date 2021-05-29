@@ -7,14 +7,16 @@ from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 import ctypes
 
+# cataloga o processo
+myappid = 'vacina.v0' # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
 # Create window and frames
 window = tk.Tk()
 window.title('vacina')
 
 # set the taskbar and window icons
 window.tk.call('wm', 'iconphoto', window._w, tk.PhotoImage(file='ícone_vacina.png'))
-myappid = 'vacina.v0' # arbitrary string
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 buttonFrame = tk.Frame(window)
 buttonFrame.pack()
@@ -27,7 +29,7 @@ pessoas = []
 
 # Create canvas and toolbar
 fig = Figure(figsize=(5, 4), dpi=100)
-plot_aux(fig.add_subplot(), pessoas, linhas = True)
+plot_aux(fig.add_subplot(), pessoas, linhas=True)
 canvas = FigureCanvasTkAgg(fig, master=plotFrame)  # A tk.DrawingArea.
 canvas.draw()
 toolbar = NavigationToolbar2Tk(canvas, plotFrame, pack_toolbar=False)
